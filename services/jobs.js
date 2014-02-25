@@ -2,16 +2,15 @@ var validator = require('validator');
 
 function saveJob(req, res){
     var job = {
-        "compName": req.query.compName,
-        "compMail": req.query.compMail,
-        "compWeb": req.query.compWeb,
-        "expireDate": req.query.expireDate,
-        "deletePassword": req.query.deletePassword,
-        "jobTittle": req.query.jobTittle,
-        "jobType": req.query.jobType,
-        "remote": req.query.remote,
-        "jobLocation": req.query.jobLocation,
-        "jobDesc": req.query.jobDesc
+        "compName": req.body.compName,
+        "compMail": req.body.compMail,
+        "compWeb": req.body.compWeb,
+        "expireDate": req.body.expireDate,
+        "deletePassword": req.body.deletePassword,
+        "jobTitle": req.body.jobTitle,
+        "jobType": req.body.jobType,
+        "jobLocation": req.body.jobLocation,
+        "jobDesc": req.body.jobDesc
     }
 
     if (validator.isEmail(job.compMail)) {
