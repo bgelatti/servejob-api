@@ -10,17 +10,49 @@ var validator = require('validator');
     "message": ["Mail invalid", "Need a title for job"]
 }
 */
-function validate(job) {
+function isJobValid(job) {
     var errors = [];
+    if (validator.isNull(job.compName)) {
+        errors.push("Company name invalid");
+    }
+
     if (!validator.isEmail(job.compMail)) {
         errors.push("Mail invalid");
+    }
+
+    if (validator.isNull(job.compWeb)) {
+        errors.push("WebSite invalid");
+    }
+
+    if (validator.isNull(job.expireDate)) {
+        errors.push("Expire date invalid");
+    }
+
+    if (validator.isNull(job.deletePassword)) {
+        errors.push("Delete password invalid");
+    }
+
+    if (validator.isNull(job.jobTitle)) {
+        errors.push("Job title invalid");
+    }
+
+    if (validator.isNull(job.jobType)) {
+        errors.push("Job type invalid");
+    }
+
+    if (validator.isNull(job.jobLocation)) {
+        errors.push("Job location invalid");
+    }
+
+    if (validator.isNull(job.jobDesc)) {
+        errors.push("Job description invalid");
     }
 
     return errors;
 }
 
 function saveJob(req, res){
-    var job, returnmsg;
+    var job, returnmsg, err = [];
     job = {
         "compName": req.body.compName,
         "compMail": req.body.compMail,
@@ -33,10 +65,12 @@ function saveJob(req, res){
         "jobDesc": req.body.jobDesc
     }
 
-    if (validate(job).length > 0) {
+    err = isJobValid(job);
+
+    if (err.length > 0) {
         returnmsg = {
             "status": false,
-            "message": errors
+            "message": err
         };
         res.send(returnmsg)
         return;
