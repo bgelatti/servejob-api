@@ -1,7 +1,27 @@
 var validator = require('validator');
+/*
+{
+    "status": true,
+    "message": "Job saved."
+    ...
+}
+{
+    "status": false,
+    "message": ["Mail invalid", "Need a title for job"]
+}
+*/
+function validate(job) {
+    var errors = [];
+    if (!validator.isEmail(job.compMail)) {
+        errors.push("Mail invalid");
+    }
+
+    return errors;
+}
 
 function saveJob(req, res){
-    var job = {
+    var job, returnmsg;
+    job = {
         "compName": req.body.compName,
         "compMail": req.body.compMail,
         "compWeb": req.body.compWeb,
@@ -13,20 +33,29 @@ function saveJob(req, res){
         "jobDesc": req.body.jobDesc
     }
 
-    if (validator.isEmail(job.compMail)) {
-        console.log('email valido');
-    }
-
-    if (validator.isDate(job.expireDate)){
-        console.log('data valida');
+    if (validate(job).length > 0) {
+        returnmsg = {
+            "status": false,
+            "message": errors
+        };
+        res.send(returnmsg)
+        return;
     }
 
     DB.collection('jobs').insert(job, function (err) {
         if (err) {
-            res.send(err);
+            returnmsg = {
+                "status": false,
+                "message": [err]
+            };
         } else {
-            res.send('OK');
+            returnmsg = {
+                "status": true,
+                "message": "New job saved with success."
+            };
         }
+
+        res.send(returnmsg);
     });
 };
 
