@@ -62,7 +62,8 @@ function saveJob(req, res){
         "jobTitle": req.body.jobTitle,
         "jobType": req.body.jobType,
         "jobLocation": req.body.jobLocation,
-        "jobDesc": req.body.jobDesc
+        "jobDesc": req.body.jobDesc,
+        "created_on": new Date()
     }
 
     err = isJobValid(job);
@@ -94,8 +95,40 @@ function saveJob(req, res){
 };
 
 function getAllJobs(req, res){
-    var collection = DB.collection('jobs').find({}).toArray(function(err, docs) {
-        console.dir(docs);
+    var filter = {};
+
+    if (req.query.model === "full") {
+        filter = {
+            "_id": 0,
+            "deletePassword": 0,
+            "expireDate": 0
+        };
+    } else {
+        filter = {
+            "compName": 1,
+            "jobTitle": 1,
+            "jobType": 1,
+            "jobLocation": 1,
+            "_id": 0
+        };
+    }
+
+    var collection = DB.collection('jobs').find({}, filter).toArray(function(err, data) {
+        var returnmsg;
+
+        if (err) {
+            returnmsg = {
+                "status": false,
+                "message": [err]
+            };
+        } else {
+            returnmsg = {
+                "status": true,
+                "result": data
+            };
+        }
+
+        res.send(returnmsg);
     });
 }
 

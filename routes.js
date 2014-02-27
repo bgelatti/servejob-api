@@ -7,7 +7,7 @@ function routes(server) {
 
     server.get('/clients/getall', SERVICES.clients.getall);
     server.post('/jobs/savejob', INFRA.allowHeader.post, SERVICES.jobs.saveJob);
-    server.get('/jobs/getalljobs', SERVICES.jobs.getAllJobs)
+    server.get('/jobs/getalljobs', INFRA.allowHeader.get, SERVICES.jobs.getAllJobs)
 }
 
 module.exports = routes;
