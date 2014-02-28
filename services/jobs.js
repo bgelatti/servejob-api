@@ -1,4 +1,6 @@
 var validator = require('validator');
+var moment = require('moment');
+var BSON = require('mongodb').BSONPure;
 /*
 {
     "status": true,
@@ -57,7 +59,7 @@ function saveJob(req, res){
         "compName": req.body.compName,
         "compMail": req.body.compMail,
         "compWeb": req.body.compWeb,
-        "expireDate": req.body.expireDate,
+        "expireDate": moment().add('M', req.body.expireDate)._d,
         "deletePassword": req.body.deletePassword,
         "jobTitle": req.body.jobTitle,
         "jobType": req.body.jobType,
@@ -99,7 +101,6 @@ function getAllJobs(req, res){
 
     if (req.query.model === "full") {
         filter = {
-            "_id": 0,
             "deletePassword": 0,
             "expireDate": 0
         };
@@ -109,7 +110,7 @@ function getAllJobs(req, res){
             "jobTitle": 1,
             "jobType": 1,
             "jobLocation": 1,
-            "_id": 0
+            "created_on": 1
         };
     }
 
@@ -132,6 +133,51 @@ function getAllJobs(req, res){
     });
 }
 
+function getById(req, res){
+    var filter = {
+        "deletePassword": 0,
+        "expireDate": 0
+    };
+
+    var id;
+
+    try {
+        id = BSON.ObjectID(req.params.id);
+    } catch(e) {
+
+    }
+
+    var query = {
+        "_id": id
+    };
+
+    var collection = DB.collection('jobs').findOne(query, filter, function(err, data){
+        var returnmsg;
+
+        if (err) {
+            returnmsg = {
+                "status": false,
+                "message": [err]
+            };
+        }
+
+        if (data) {
+            returnmsg = {
+                "status": true,
+                "result": data
+            };
+        } else {
+            returnmsg = {
+                "status": false,
+                "message": ["ID don't exists"]
+            };
+        }
+
+        res.send(returnmsg);
+    });
+}
+
 
 exports.saveJob = saveJob;
 exports.getAllJobs = getAllJobs;
+exports.getById = getById;
