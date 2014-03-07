@@ -60,7 +60,7 @@ function saveJob(req, res){
         "compMail": req.body.compMail,
         "compWeb": req.body.compWeb,
         "expireDate": moment().add('M', req.body.expireDate)._d,
-        "deletePassword": req.body.deletePassword,
+        "deletePassword": INFRA.cryptoPass(req.body.deletePassword),
         "jobTitle": req.body.jobTitle,
         "jobType": req.body.jobType,
         "jobLocation": req.body.jobLocation,
@@ -177,7 +177,49 @@ function getById(req, res){
     });
 }
 
+function deleteById(req, res){
+    var id, pass;
+
+    try {
+        id = BSON.ObjectID(req.params.id);
+        pass = INFRA.cryptoPass(req.params.password);
+    } catch(e) {
+
+    }
+
+    var query = {
+        "_id": id,
+        "deletePassword": pass
+    };
+
+    var collection = DB.collection('jobs').remove(query, function(err, data){
+        var returnmsg;
+
+        if (err) {
+            returnmsg = {
+                "status": false,
+                "message": [err]
+            };
+        }
+
+        if (data === 1) {
+            returnmsg = {
+                "status": true,
+                "result": 'Deleted with success'
+            };
+        } else {
+            returnmsg = {
+                "status": false,
+                "message": ["ID don't exists or password incorrect"]
+            };
+        }
+
+        res.send(returnmsg);
+    });
+}
+
 
 exports.saveJob = saveJob;
 exports.getAllJobs = getAllJobs;
 exports.getById = getById;
+exports.deleteById = deleteById;
