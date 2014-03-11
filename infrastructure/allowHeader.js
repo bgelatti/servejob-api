@@ -2,8 +2,8 @@
 'use strict';
 
 var _default = function (res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    res.header('Access-Control-Allow-Origin', CONFIG.allow_origin);
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.header('Content-Type', 'application/json; charset=utf-8');
     next();
 };

@@ -3,3 +3,4 @@
 
 exports.allowHeader = require('./allowHeader.js');
 exports.cryptoPass = require('./crypto_pass.js');
+exports.permalink = require('./permalink.js');

@@ -50,7 +50,42 @@ function isJobValid(job) {
         errors.push("Job description invalid");
     }
 
+    if (validator.isNull(job.howToApply)) {
+        errors.push("How to Apply is required");
+    }
+
     return errors;
+}
+
+function normalizeHttp(url){
+    if (url.indexOf("http://") === 0) {
+        return url.substring(7, url.length);
+    } else if (url.indexOf("https://") === 0) {
+        return url.substring(8, url.length);
+    } else {
+        return url;
+    }
+}
+
+function permalinkGenerator(compName, jobTitle, callback) {
+    var rawpermalink = compName + " " + jobTitle;
+    var permalink = INFRA.permalink(rawpermalink);
+    var query = {
+        "permalink": permalink
+    };
+    var filter = {
+        "_id": 1
+    }
+
+    DB.collection('jobs').findOne(query, filter, function(err, data){
+        if (data) {
+            permalinkGenerator(compName, jobTitle + " job", function(permalinkCall){
+                callback(permalinkCall);
+            });
+        } else {
+            callback(permalink);
+        }
+    });
 }
 
 function saveJob(req, res){
@@ -58,14 +93,15 @@ function saveJob(req, res){
     job = {
         "compName": req.body.compName,
         "compMail": req.body.compMail,
-        "compWeb": req.body.compWeb,
+        "compWeb": normalizeHttp(req.body.compWeb),
         "expireDate": moment().add('M', req.body.expireDate)._d,
         "deletePassword": INFRA.cryptoPass(req.body.deletePassword),
         "jobTitle": req.body.jobTitle,
         "jobType": req.body.jobType,
         "jobLocation": req.body.jobLocation,
         "jobDesc": req.body.jobDesc,
-        "created_on": new Date()
+        "created_on": new Date(),
+        "howToApply": req.body.howToApply
     }
 
     err = isJobValid(job);
@@ -79,20 +115,24 @@ function saveJob(req, res){
         return;
     }
 
-    DB.collection('jobs').insert(job, function (err) {
-        if (err) {
-            returnmsg = {
-                "status": false,
-                "message": [err]
-            };
-        } else {
-            returnmsg = {
-                "status": true,
-                "message": "New job saved with success."
-            };
-        }
+    permalinkGenerator(req.body.compName, req.body.jobTitle, function(permalink){
+        job.permalink = permalink;
 
-        res.send(returnmsg);
+        DB.collection('jobs').insert(job, function (err) {
+            if (err) {
+                returnmsg = {
+                    "status": false,
+                    "message": [err]
+                };
+            } else {
+                returnmsg = {
+                    "status": true,
+                    "message": "New job saved with success."
+                };
+            }
+
+            res.send(returnmsg);
+        });
     });
 };
 
@@ -110,11 +150,12 @@ function getAllJobs(req, res){
             "jobTitle": 1,
             "jobType": 1,
             "jobLocation": 1,
-            "created_on": 1
+            "created_on": 1,
+            "permalink": 1
         };
     }
 
-    var collection = DB.collection('jobs').find({}, filter).toArray(function(err, data) {
+    var collection = DB.collection('jobs').find({}, filter).sort({"created_on": -1}).toArray(function(err, data) {
         var returnmsg;
 
         if (err) {
@@ -151,7 +192,7 @@ function getById(req, res){
         "_id": id
     };
 
-    var collection = DB.collection('jobs').findOne(query, filter, function(err, data){
+    DB.collection('jobs').findOne(query, filter, function(err, data){
         var returnmsg;
 
         if (err) {
@@ -170,6 +211,42 @@ function getById(req, res){
             returnmsg = {
                 "status": false,
                 "message": ["ID don't exists"]
+            };
+        }
+
+        res.send(returnmsg);
+    });
+}
+
+function getByPermalink(req, res){
+    var filter = {
+        "deletePassword": 0,
+        "expireDate": 0
+    };
+
+    var query = {
+        "permalink": req.params.permalink
+    };
+
+    DB.collection('jobs').findOne(query, filter, function(err, data){
+        var returnmsg;
+
+        if (err) {
+            returnmsg = {
+                "status": false,
+                "message": [err]
+            };
+        }
+
+        if (data) {
+            returnmsg = {
+                "status": true,
+                "result": data
+            };
+        } else {
+            returnmsg = {
+                "status": false,
+                "message": ["Permalink don't exists"]
             };
         }
 
@@ -219,7 +296,10 @@ function deleteById(req, res){
 }
 
 
+
+
 exports.saveJob = saveJob;
 exports.getAllJobs = getAllJobs;
 exports.getById = getById;
 exports.deleteById = deleteById;
+exports.getByPermalink = getByPermalink;

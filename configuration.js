@@ -1,9 +1,10 @@
 var format  = require('util').format;
 var env     = process.env;
 var configs = {
-    "port"                  : env.PORT    || 7050,
-    "connectionString"      : env.DB      || 'mongodb://localhost/servejob',
-    "connectionString_test" : env.DB_TEST || 'mongodb://localhost/servejob-test'
+    "port"                  : env.PORT         || 7050,
+    "allow_origin"          : env.ALLOW_ORIGIN || '*',
+    "connectionString"      : env.DB           || 'mongodb://localhost/servejob',
+    "connectionString_test" : env.DB_TEST      || 'mongodb://localhost/servejob-test'
 };
 
 // if (process.env.WERCKER_MONGODB_HOST) {
