@@ -11,6 +11,7 @@ function routes(server) {
     server.get('/jobs/getbyid/:id', INFRA.allowHeader.get, SERVICES.jobs.getById);
     server.get('/jobs/getbypermalink/:permalink', INFRA.allowHeader.get, SERVICES.jobs.getByPermalink);
     server.del('/jobs/delete/:password/:id', INFRA.allowHeader.del, SERVICES.jobs.deleteById);
+    server.get('/jobs/search/:term', INFRA.allowHeader.get, SERVICES.jobs.searchJob);
 }
 
 module.exports = routes;

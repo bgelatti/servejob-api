@@ -1,6 +1,7 @@
+var _         = require('lodash');
 var validator = require('validator');
-var moment = require('moment');
-var BSON = require('mongodb').BSONPure;
+var moment    = require('moment');
+var BSON      = require('mongodb').BSONPure;
 /*
 {
     "status": true,
@@ -269,7 +270,7 @@ function deleteById(req, res){
         "deletePassword": pass
     };
 
-    var collection = DB.collection('jobs').remove(query, function(err, data){
+    DB.collection('jobs').remove(query, function(err, data){
         var returnmsg;
 
         if (err) {
@@ -295,11 +296,54 @@ function deleteById(req, res){
     });
 }
 
+function searchJob(req, res) {
+    var searchTerm = req.params.term;
+
+    var filter = {
+        "compName": 1,
+        "jobTitle": 1,
+        "jobType": 1,
+        "jobLocation": 1,
+        "created_on": 1,
+        "permalink": 1
+    };
+    var query = {
+        "text": "jobs",
+        "search": searchTerm,
+        "project": filter,
+        "limit": 100
+    };
+
+    DB.command(query, function (err, data) {
+        var returnmsg;
+
+        if (err) {
+            returnmsg = {
+                "status": false,
+                "message": [err]
+            };
+        }
+
+        if (data.results.length > 0) {
+            returnmsg = {
+                "status": true,
+                "result": _.reduceRight(data.results, function(a, b) { return a.concat(b.obj); }, [])
+            };
+        } else {
+            returnmsg = {
+                "status": false,
+                "message": ["Sorry, no results containing all your search terms were found."]
+            };
+        }
+
+        res.send(returnmsg);
+    });
+}
 
 
-
-exports.saveJob = saveJob;
-exports.getAllJobs = getAllJobs;
-exports.getById = getById;
-exports.deleteById = deleteById;
+exports.saveJob        = saveJob;
+exports.getAllJobs     = getAllJobs;
+exports.getById        = getById;
+exports.deleteById     = deleteById;
 exports.getByPermalink = getByPermalink;
+exports.searchJob      = searchJob;
