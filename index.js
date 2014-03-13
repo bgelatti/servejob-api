@@ -16,6 +16,9 @@ boot.environment();
 /**
  * Express Configuration.
  */
+if (!process.env.DISABLE_EXPRESS_LOG) {
+   server.use(express.logger('dev'));
+}
 server.set('port', CONFIG.port);
 server.disable('x-powered-by');
 server.use(express.logger('dev'));
