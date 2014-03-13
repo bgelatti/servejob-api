@@ -156,7 +156,7 @@ function getAllJobs(req, res){
         };
     }
 
-    var collection = DB.collection('jobs').find({}, filter).sort({"created_on": -1}).toArray(function(err, data) {
+    DB.collection('jobs').find({}, filter).sort({"created_on": -1}).toArray(function(err, data) {
         var returnmsg;
 
         if (err) {
