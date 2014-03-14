@@ -18,7 +18,8 @@
     "validator": "~3.2.1",
     "moment": "~2.5.1",
     "lodash": "^2.4.1",
-    "feed": "~0.2.6"
+    "feed": "~0.2.6",
+    "newrelic": "*"
   },
   "devDependencies": {
     "jslint": "^0.3.0",

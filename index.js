@@ -16,6 +16,7 @@ var server  = express();
  */
 boot.mongo();
 boot.environment();
+boot.newrelic();
 
 /**
  * Express Configuration.
