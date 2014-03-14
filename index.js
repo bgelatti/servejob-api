@@ -1,3 +1,7 @@
+/*jslint node:true*/
+/*globals CONFIG*/
+'use strict';
+
 /**
  * Module dependencies.
  */
@@ -17,7 +21,7 @@ boot.environment();
  * Express Configuration.
  */
 if (!process.env.DISABLE_EXPRESS_LOG) {
-   server.use(express.logger('dev'));
+    server.use(express.logger('dev'));
 }
 server.set('port', CONFIG.port);
 server.disable('x-powered-by');
@@ -36,7 +40,7 @@ routes(server);
 /**
  * Start Server.
  */
-server.listen(server.get('port'), function() {
+server.listen(server.get('port'), function () {
     var msg = '';
     msg += '\n- \u001b[31mServeJob - API';
     msg += '\u001b[31m at \u001b[0m';

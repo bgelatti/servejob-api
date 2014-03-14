@@ -19,5 +19,9 @@
     "moment": "~2.5.1",
     "lodash": "^2.4.1",
     "feed": "~0.2.6"
+  },
+  "devDependencies": {
+    "jslint": "^0.3.0",
+    "mocha": "^1.18.0"
   }
 }
