@@ -1,3 +1,7 @@
+/*jslint node:true, unparam:true*/
+/*globals INFRA, SERVICES*/
+'use strict';
+
 function routes(server) {
     server.options('*', INFRA.allowHeader.all);
 

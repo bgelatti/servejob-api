@@ -1,3 +1,6 @@
+/*jslint node:true*/
+'use strict';
+
 var format  = require('util').format;
 var env     = process.env;
 var configs = {

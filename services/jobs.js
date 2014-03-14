@@ -1,3 +1,8 @@
+/*jslint node:true, unparam:true, nomen:true*/
+/*globals DB, INFRA*/
+'use strict';
+
+
 var _         = require('lodash');
 var validator = require('validator');
 var moment    = require('moment');
@@ -176,24 +181,23 @@ function getAllJobs(req, res){
 }
 
 function getById(req, res){
-    var filter = {
+    var filter, id, query;
+    filter = {
         "deletePassword": 0,
         "expireDate": 0
     };
 
-    var id;
+    id;
 
     try {
         id = BSON.ObjectID(req.params.id);
-    } catch(e) {
+    } catch (ignore) {}
 
-    }
-
-    var query = {
+    query = {
         "_id": id
     };
 
-    DB.collection('jobs').findOne(query, filter, function(err, data){
+    DB.collection('jobs').findOne(query, filter, function (err, data) {
         var returnmsg;
 
         if (err) {
@@ -219,17 +223,18 @@ function getById(req, res){
     });
 }
 
-function getByPermalink(req, res){
-    var filter = {
+function getByPermalink(req, res) {
+    var filter, query;
+    filter = {
         "deletePassword": 0,
         "expireDate": 0
     };
 
-    var query = {
+    query = {
         "permalink": req.params.permalink
     };
 
-    DB.collection('jobs').findOne(query, filter, function(err, data){
+    DB.collection('jobs').findOne(query, filter, function (err, data) {
         var returnmsg;
 
         if (err) {
@@ -255,22 +260,20 @@ function getByPermalink(req, res){
     });
 }
 
-function deleteById(req, res){
-    var id, pass;
+function deleteById(req, res) {
+    var id, pass, query;
 
     try {
         id = BSON.ObjectID(req.params.id);
         pass = INFRA.cryptoPass(req.params.password);
-    } catch(e) {
+    } catch (ignore) {}
 
-    }
-
-    var query = {
+    query = {
         "_id": id,
         "deletePassword": pass
     };
 
-    DB.collection('jobs').remove(query, function(err, data){
+    DB.collection('jobs').remove(query, function (err, data) {
         var returnmsg;
 
         if (err) {
@@ -297,9 +300,10 @@ function deleteById(req, res){
 }
 
 function searchJob(req, res) {
-    var searchTerm = req.params.term;
+    var searchTerm, filter, query;
+    searchTerm = req.params.term;
 
-    var filter = {
+    filter = {
         "compName": 1,
         "jobTitle": 1,
         "jobType": 1,
@@ -307,7 +311,7 @@ function searchJob(req, res) {
         "created_on": 1,
         "permalink": 1
     };
-    var query = {
+    query = {
         "text": "jobs",
         "search": searchTerm,
         "project": filter,
@@ -327,7 +331,7 @@ function searchJob(req, res) {
         if (data.results.length > 0) {
             returnmsg = {
                 "status": true,
-                "result": _.reduceRight(data.results, function(a, b) { return a.concat(b.obj); }, [])
+                "result": _.reduceRight(data.results, function (a, b) { return a.concat(b.obj); }, [])
             };
         } else {
             returnmsg = {
