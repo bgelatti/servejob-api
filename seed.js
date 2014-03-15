@@ -1,4 +1,3 @@
-
 /*jslint node:true*/
 /*globals DB*/
 'use strict';

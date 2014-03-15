@@ -63,29 +63,30 @@ function isJobValid(job) {
     return errors;
 }
 
-function normalizeHttp(url){
+function normalizeHttp(url) {
     if (url.indexOf("http://") === 0) {
         return url.substring(7, url.length);
-    } else if (url.indexOf("https://") === 0) {
-        return url.substring(8, url.length);
-    } else {
-        return url;
     }
+    if (url.indexOf("https://") === 0) {
+        return url.substring(8, url.length);
+    }
+    return url;
 }
 
 function permalinkGenerator(compName, jobTitle, callback) {
-    var rawpermalink = compName + " " + jobTitle;
-    var permalink = INFRA.permalink(rawpermalink);
-    var query = {
+    var rawpermalink, permalink, query, filter;
+    rawpermalink = compName + " " + jobTitle;
+    permalink = INFRA.permalink(rawpermalink);
+    query = {
         "permalink": permalink
     };
-    var filter = {
+    filter = {
         "_id": 1
-    }
+    };
 
-    DB.collection('jobs').findOne(query, filter, function(err, data){
+    DB.collection('jobs').findOne(query, filter, function (err, data) {
         if (data) {
-            permalinkGenerator(compName, jobTitle + " job", function(permalinkCall){
+            permalinkGenerator(compName, jobTitle + " job", function (permalinkCall) {
                 callback(permalinkCall);
             });
         } else {
@@ -94,7 +95,7 @@ function permalinkGenerator(compName, jobTitle, callback) {
     });
 }
 
-function saveJob(req, res){
+function saveJob(req, res) {
     var job, returnmsg, err = [];
     job = {
         "compName": req.body.compName,
@@ -108,7 +109,7 @@ function saveJob(req, res){
         "jobDesc": req.body.jobDesc,
         "created_on": new Date(),
         "howToApply": req.body.howToApply
-    }
+    };
 
     err = isJobValid(job);
 
@@ -117,11 +118,11 @@ function saveJob(req, res){
             "status": false,
             "message": err
         };
-        res.send(returnmsg)
+        res.send(returnmsg);
         return;
     }
 
-    permalinkGenerator(req.body.compName, req.body.jobTitle, function(permalink){
+    permalinkGenerator(req.body.compName, req.body.jobTitle, function (permalink) {
         job.permalink = permalink;
 
         DB.collection('jobs').insert(job, function (err) {
@@ -140,9 +141,9 @@ function saveJob(req, res){
             res.send(returnmsg);
         });
     });
-};
+}
 
-function getAllJobs(req, res){
+function getAllJobs(req, res) {
     var filter = {};
 
     if (req.query.model === "full") {
@@ -161,7 +162,7 @@ function getAllJobs(req, res){
         };
     }
 
-    DB.collection('jobs').find({}, filter).sort({"created_on": -1}).toArray(function(err, data) {
+    DB.collection('jobs').find({}, filter).sort({"created_on": -1}).toArray(function (err, data) {
         var returnmsg;
 
         if (err) {
@@ -180,14 +181,12 @@ function getAllJobs(req, res){
     });
 }
 
-function getById(req, res){
+function getById(req, res) {
     var filter, id, query;
     filter = {
         "deletePassword": 0,
         "expireDate": 0
     };
-
-    id;
 
     try {
         id = BSON.ObjectID(req.params.id);

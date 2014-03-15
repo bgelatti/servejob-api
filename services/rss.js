@@ -1,7 +1,12 @@
+/*jslint node:true, unparam:true, nomen:true*/
+/*globals DB*/
+'use strict';
+
 var Feed = require('feed');
 
 function getAllFeed(req, res) {
-    var filter = {
+    var jobs, feed, key, filter, returnmsg;
+    filter = {
         "compName": 1,
         "jobTitle": 1,
         "jobType": 1,
@@ -11,9 +16,9 @@ function getAllFeed(req, res) {
         "_id": 0
     };
 
-    DB.collection('jobs').find({}, filter).limit(10).sort({"created_on": -1}).toArray(function(err, data) {
+    DB.collection('jobs').find({}, filter).limit(10).sort({"created_on": -1}).toArray(function (err, data) {
         if (err) {
-            var returnmsg = {
+            returnmsg = {
                 "status": false,
                 "message": [err]
             };
@@ -22,9 +27,9 @@ function getAllFeed(req, res) {
             return;
         }
 
-        var jobs = data;
+        jobs = data;
 
-        var feed = new Feed({
+        feed = new Feed({
             "title":       'ServeJob',
             "description": 'If you are seeking employment, their place here. No registration, no hassles, no ad, simple and objective.',
             "link":        'http://www.servejob.com',
@@ -38,7 +43,7 @@ function getAllFeed(req, res) {
             }
         });
 
-        for(var key in jobs) {
+        for (key = 0; key < jobs.length; key = key + 1) {
             feed.addItem({
                 "title":          (jobs[key].jobType + ' | ' + jobs[key].jobTitle + ' | ' + jobs[key].compName),
                 "link":           ('http://www.servejob.com/#!/job/' + jobs[key].permalink),
@@ -53,8 +58,6 @@ function getAllFeed(req, res) {
         console.log(feed.render('rss-2.0'));
         res.send(feed.render('rss-2.0'));
     });
-
-
-};
+}
 
 exports.getAllFeed = getAllFeed;

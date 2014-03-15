@@ -1,4 +1,5 @@
 /*jslint node: true, unparam: true, white: true, nomen: true*/
+/*globals CONFIG*/
 'use strict';
 
 var _default = function (res, next) {

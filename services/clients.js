@@ -1,3 +1,7 @@
+/*jslint node: true, unparam:true*/
+/*globals DB*/
+'use strict';
+
 var validator = require('validator');
 
 function getall(req, res) {
