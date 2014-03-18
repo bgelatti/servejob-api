@@ -97,6 +97,18 @@ function permalinkGenerator(compName, jobTitle, callback) {
 
 function saveJob(req, res) {
     var job, returnmsg, err = [];
+
+    err = isJobValid(req.body);
+
+    if (err.length > 0) {
+        returnmsg = {
+            "status": false,
+            "message": err
+        };
+        res.send(returnmsg);
+        return;
+    }
+
     job = {
         "compName": req.body.compName,
         "compMail": req.body.compMail,
@@ -110,17 +122,6 @@ function saveJob(req, res) {
         "created_on": new Date(),
         "howToApply": req.body.howToApply
     };
-
-    err = isJobValid(job);
-
-    if (err.length > 0) {
-        returnmsg = {
-            "status": false,
-            "message": err
-        };
-        res.send(returnmsg);
-        return;
-    }
 
     permalinkGenerator(req.body.compName, req.body.jobTitle, function (permalink) {
         job.permalink = permalink;
