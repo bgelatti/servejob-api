@@ -9,7 +9,6 @@ function routes(server) {
         res.send("Ok");
     });
 
-    server.get('/clients/getall', SERVICES.clients.getall);
     server.post('/jobs/savejob', INFRA.allowHeader.post, SERVICES.jobs.saveJob);
     server.get('/jobs/getalljobs', INFRA.allowHeader.get, SERVICES.jobs.getAllJobs);
     server.get('/jobs/getbyid/:id', INFRA.allowHeader.get, SERVICES.jobs.getById);

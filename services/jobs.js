@@ -345,9 +345,11 @@ function searchJob(req, res) {
 }
 
 
-exports.saveJob        = saveJob;
-exports.getAllJobs     = getAllJobs;
-exports.getById        = getById;
-exports.deleteById     = deleteById;
-exports.getByPermalink = getByPermalink;
-exports.searchJob      = searchJob;
+exports.saveJob             = saveJob;
+exports.getAllJobs          = getAllJobs;
+exports.getById             = getById;
+exports.deleteById          = deleteById;
+exports.getByPermalink      = getByPermalink;
+exports.searchJob           = searchJob;
+exports._normalizeHttp      = normalizeHttp;
+exports._permalinkGenerator = permalinkGenerator;

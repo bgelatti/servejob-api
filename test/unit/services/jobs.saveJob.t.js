@@ -4,17 +4,6 @@
 
 var assert = require('assert');
 
-function res_mock() {
-    var content_send = {};
-
-    return {
-        'send': function (x) {
-            content_send = x;
-        },
-        'content_send': content_send
-    };
-}
-
 function req_mock() {
     return {
         'body': {
