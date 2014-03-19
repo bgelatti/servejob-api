@@ -18,13 +18,24 @@ suite('job.getAllJobs', function () {
                     return {
                         'find': function () {
                             return {
+                                'count': function (callback) {
+                                    callback(null, 5);
+                                },
                                 'sort': function () {
                                     return {
-                                        'toArray': function (callback) {
-                                            var arrayresult = [{
-                                                "compName": "test"
-                                            }];
-                                            callback(null, arrayresult);
+                                        'skip': function () {
+                                            return {
+                                                'limit' : function () {
+                                                    return {
+                                                        'toArray': function (callback) {
+                                                            var arrayresult = [{
+                                                                "compName": "test"
+                                                            }];
+                                                            callback(null, arrayresult);
+                                                        }
+                                                    };
+                                                }
+                                            };
                                         }
                                     };
                                 }
@@ -36,7 +47,9 @@ suite('job.getAllJobs', function () {
             GLOBAL.DB = db_mock;
             res = {
                 'send': function (x) {
-                    assert.equal("test", x.result[0].compName);
+                    assert.equal(5, x.result.total_items);
+                    assert.equal(1, x.result.total_pages);
+                    assert.equal("test", x.result.items[0].compName);
                     assert.ok(x.status);
                     done();
                 }

@@ -19,7 +19,8 @@
     "moment": "~2.5.1",
     "lodash": "^2.4.1",
     "feed": "~0.2.6",
-    "newrelic": "*"
+    "newrelic": "*",
+    "async": "^0.2.10"
   },
   "devDependencies": {
     "jslint": "^0.3.0",

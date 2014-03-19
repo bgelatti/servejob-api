@@ -2,22 +2,12 @@
 /*globals DB, INFRA*/
 'use strict';
 
-
 var _         = require('lodash');
 var validator = require('validator');
 var moment    = require('moment');
+var async     = require('async');
 var BSON      = require('mongodb').BSONPure;
-/*
-{
-    "status": true,
-    "message": "Job saved."
-    ...
-}
-{
-    "status": false,
-    "message": ["Mail invalid", "Need a title for job"]
-}
-*/
+
 function isJobValid(job) {
     var errors = [];
     if (validator.isNull(job.compName)) {
@@ -145,7 +135,8 @@ function saveJob(req, res) {
 }
 
 function getAllJobs(req, res) {
-    var filter = {};
+    var filter = {}, sort, page, jobQty, skip,
+        getJobsDB, getCountJobsDB;
 
     if (req.query.model === "full") {
         filter = {
@@ -163,7 +154,34 @@ function getAllJobs(req, res) {
         };
     }
 
-    DB.collection('jobs').find({}, filter).sort({"created_on": -1}).toArray(function (err, data) {
+    sort = {
+        "created_on": -1
+    };
+
+    page = req.query.page || 1;
+    jobQty = parseInt(req.query.jobQty || 10, 10);
+    skip = (jobQty / (page - 1));
+    if (isNaN(jobQty)) {
+        jobQty = 10;
+    }
+
+    if (jobQty > 20) {
+        jobQty = 10;
+    }
+
+    getJobsDB = function (callback) {
+        DB.collection('jobs').find({}, filter).sort(sort).skip(skip).limit(jobQty).toArray(function (err, jobList) {
+            callback(err, jobList);
+        });
+    };
+
+    getCountJobsDB = function (callback) {
+        DB.collection('jobs').find({}).count(function (err, jobQty) {
+            callback(err, jobQty);
+        });
+    };
+
+    async.parallel({ "getJobsDB": getJobsDB, "getCountJobsDB": getCountJobsDB }, function (err, result) {
         var returnmsg;
 
         if (err) {
@@ -174,7 +192,11 @@ function getAllJobs(req, res) {
         } else {
             returnmsg = {
                 "status": true,
-                "result": data
+                "result": {
+                    "total_items": result.getCountJobsDB,
+                    "total_pages": Math.ceil((result.getCountJobsDB / jobQty)),
+                    "items": result.getJobsDB
+                }
             };
         }
 
