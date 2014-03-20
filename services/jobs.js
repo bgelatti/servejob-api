@@ -160,7 +160,6 @@ function getAllJobs(req, res) {
 
     page = req.query.page || 1;
     jobQty = parseInt(req.query.jobQty || 10, 10);
-    skip = (jobQty / (page - 1));
     if (isNaN(jobQty)) {
         jobQty = 10;
     }
@@ -169,19 +168,25 @@ function getAllJobs(req, res) {
         jobQty = 10;
     }
 
-    getJobsDB = function (callback) {
-        DB.collection('jobs').find({}, filter).sort(sort).skip(skip).limit(jobQty).toArray(function (err, jobList) {
-            callback(err, jobList);
-        });
-    };
-
     getCountJobsDB = function (callback) {
-        DB.collection('jobs').find({}).count(function (err, jobQty) {
-            callback(err, jobQty);
+        DB.collection('jobs').find({}).count(function (err, jobCount) {
+            callback(err, jobCount);
         });
     };
 
-    async.parallel({ "getJobsDB": getJobsDB, "getCountJobsDB": getCountJobsDB }, function (err, result) {
+    getJobsDB = function (jobCount, callback) {
+        skip = ((page - 1) * jobQty);
+        DB.collection('jobs').find({}, filter).sort(sort).skip(skip).limit(jobQty).toArray(function (err, jobList) {
+            var result = {
+                "total_items": jobCount,
+                "total_pages": Math.ceil((jobCount / jobQty)),
+                "items": jobList
+            }
+            callback(err, result);
+        });
+    };
+
+    async.waterfall([getCountJobsDB, getJobsDB], function (err, result) {
         var returnmsg;
 
         if (err) {
@@ -192,11 +197,7 @@ function getAllJobs(req, res) {
         } else {
             returnmsg = {
                 "status": true,
-                "result": {
-                    "total_items": result.getCountJobsDB,
-                    "total_pages": Math.ceil((result.getCountJobsDB / jobQty)),
-                    "items": result.getJobsDB
-                }
+                "result": result
             };
         }
 
