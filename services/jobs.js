@@ -353,7 +353,7 @@ function searchJob(req, res) {
         if (data.results.length > 0) {
             returnmsg = {
                 "status": true,
-                "result": _.reduceRight(data.results, function (a, b) { return a.concat(b.obj); }, [])
+                "result": _.reduce(data.results, function (a, b) { return a.concat(b.obj); }, [])
             };
         } else {
             returnmsg = {
