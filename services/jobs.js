@@ -14,14 +14,6 @@ function isJobValid(job) {
         errors.push("Company name invalid");
     }
 
-    if (!validator.isEmail(job.compMail)) {
-        errors.push("Mail invalid");
-    }
-
-    if (validator.isNull(job.compWeb)) {
-        errors.push("WebSite invalid");
-    }
-
     if (validator.isNull(job.expireDate)) {
         errors.push("Expire date invalid");
     }
