@@ -20,7 +20,8 @@
     "lodash": "^2.4.1",
     "feed": "~0.2.6",
     "newrelic": "*",
-    "async": "^0.2.10"
+    "async": "^0.2.10",
+    "sitemap": "^0.7.2"
   },
   "devDependencies": {
     "jslint": "^0.3.0",

@@ -16,6 +16,7 @@ function routes(server) {
     server.del('/jobs/delete/:password/:id', INFRA.allowHeader.del, SERVICES.jobs.deleteById);
     server.get('/jobs/search/:term', INFRA.allowHeader.get, SERVICES.jobs.searchJob);
     server.get('/rss', INFRA.allowHeader.get, SERVICES.rss.getAllFeed);
+    server.get('/sitemap', INFRA.allowHeader.get, SERVICES.sitemap.get);
 }
 
 module.exports = routes;
