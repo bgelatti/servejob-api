@@ -40,28 +40,6 @@ suite('job.saveJob', function () {
             };
             saveJob(req, res);
         });
-        test('Mail invalid', function () {
-            var req, res;
-            req = req_mock();
-            req.body.compMail = '';
-            res = {
-                'send': function (x) {
-                    assert.equal('Mail invalid', x.message[0]);
-                }
-            };
-            saveJob(req, res);
-        });
-        test('WebSite invalid', function () {
-            var req, res;
-            req = req_mock();
-            req.body.compWeb = '';
-            res = {
-                'send': function (x) {
-                    assert.equal('WebSite invalid', x.message[0]);
-                }
-            };
-            saveJob(req, res);
-        });
         test('Expire date invalid', function () {
             var req, res;
             req = req_mock();

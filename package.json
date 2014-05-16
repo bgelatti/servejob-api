@@ -21,6 +21,7 @@
     "moment": "^2.6.0",
     "mongodb": "^1.4.4",
     "newrelic": "*",
+    "sitemap": "^0.7.2",
     "validator": "^3.12.0"
   },
   "devDependencies": {

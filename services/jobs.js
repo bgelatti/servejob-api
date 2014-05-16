@@ -173,7 +173,7 @@ function getAllJobs(req, res) {
                 "total_items": jobCount,
                 "total_pages": Math.ceil((jobCount / jobQty)),
                 "items": jobList
-            }
+            };
             callback(err, result);
         });
     };

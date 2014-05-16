@@ -1,0 +1,12 @@
+[
+    {
+        "url": "/",
+        "changefreq": "monthly",
+        "priority": 0.7
+    },
+    {
+        "url": "/newjob/",
+        "changefreq": "monthly",
+        "priority": 0.7
+    }
+]
