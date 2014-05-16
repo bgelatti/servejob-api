@@ -14,4 +14,4 @@ build:
                 echo "npm version: $(npm -v)"
 deploy:
     steps:
-        - heroku-deploynd
+        - heroku-deploy
