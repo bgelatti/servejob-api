@@ -5,11 +5,12 @@
 /**
  * Module dependencies.
  */
-var express = require('express');
-var format  = require('util').format;
-var boot    = require('./bootstrap/');
-var routes  = require('./routes.js');
-var server  = express();
+var express    = require('express');
+var bodyParser = require('body-parser');
+var format     = require('util').format;
+var boot       = require('./bootstrap/');
+var routes     = require('./routes.js');
+var server     = express();
 
 /**
  * Init third-party services
@@ -21,17 +22,9 @@ boot.newrelic();
 /**
  * Express Configuration.
  */
-if (!process.env.DISABLE_EXPRESS_LOG) {
-    server.use(express.logger('dev'));
-}
 server.set('port', CONFIG.port);
 server.disable('x-powered-by');
-server.use(express.logger('dev'));
-server.use(express.favicon());
-server.use(express.urlencoded());
-server.use(express.json());
-server.use(express.methodOverride());
-server.use(server.router);
+server.use(bodyParser());
 
 /**
  * Routes Configuration.

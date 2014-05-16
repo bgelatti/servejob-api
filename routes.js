@@ -13,7 +13,7 @@ function routes(server) {
     server.get('/jobs/getalljobs', INFRA.allowHeader.get, SERVICES.jobs.getAllJobs);
     server.get('/jobs/getbyid/:id', INFRA.allowHeader.get, SERVICES.jobs.getById);
     server.get('/jobs/getbypermalink/:permalink', INFRA.allowHeader.get, SERVICES.jobs.getByPermalink);
-    server.del('/jobs/delete/:password/:id', INFRA.allowHeader.del, SERVICES.jobs.deleteById);
+    server.delete('/jobs/delete/:password/:id', INFRA.allowHeader.del, SERVICES.jobs.deleteById);
     server.get('/jobs/search/:term', INFRA.allowHeader.get, SERVICES.jobs.searchJob);
     server.get('/rss', INFRA.allowHeader.get, SERVICES.rss.getAllFeed);
 }

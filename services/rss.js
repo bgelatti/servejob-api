@@ -55,8 +55,7 @@ function getAllFeed(req, res) {
         feed.addCategory('Technology');
         feed.addCategory('Jobs');
         res.header('Content-Type', 'text/xml; charset=utf-8');
-        console.log(feed.render('rss-2.0'));
-        res.send(feed.render('rss-2.0'));
+        res.send(feed.render('atom-1.0'));
     });
 }
 
