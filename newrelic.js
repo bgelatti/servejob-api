@@ -11,7 +11,7 @@ exports.config = {
     /**
     * Your New Relic license key.
     */
-    license_key : '808f3be32842fea709464266d7416dfc3ab7c797',
+    license_key : conf.newrelic,
     logging : {
         /**
         * Level at which to log. 'trace' is most useful to New Relic when diagnosing
@@ -23,7 +23,7 @@ exports.config = {
 };
 
 exports.start = function start() {
-    if (conf.newrelic === 'true') {
+    if (conf.newrelic) {
         require('newrelic');
     }
 };

@@ -8,7 +8,7 @@ var configs = {
     "allow_origin"          : env.ALLOW_ORIGIN || '*',
     "connectionString"      : env.DB           || 'mongodb://localhost/servejob',
     "connectionString_test" : env.DB_TEST      || 'mongodb://localhost/servejob-test',
-    "newrelic"              : env.NEWRELIC     || false
+    "newrelic"              : env.NEWRELIC     || null
 };
 
 // if (process.env.WERCKER_MONGODB_HOST) {
