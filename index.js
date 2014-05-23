@@ -23,7 +23,6 @@ boot.newrelic();
  * Express Configuration.
  */
 server.set('port', CONFIG.port);
-server.disable('x-powered-by');
 server.use(bodyParser());
 
 /**
